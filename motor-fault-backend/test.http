@@ -1,0 +1,9 @@
+### Send sensor data to backend
+POST http://localhost:5000/api/sensor-data/
+Content-Type: application/json
+
+{
+  "current": [2.8, 2.75, 2.78, 2.8, 2.77],
+  "voltage": [8, 9, 9.2, 9, 9.3],
+  "temp": [90, 95, 97, 93, 94]
+}
