@@ -19,11 +19,23 @@ async function sensorController(req, res) {
         db.query(sql, [inputData, fault], (err, dbResult) => {
             if (err) return res.status(500).json({ error: 'Database error' });
 
+            // Emit real-time update
+            const io = req.app.get('io');
+            if (io) {
+                io.emit('motor-update', {
+                    id: dbResult.insertId,
+                    fault: fault,
+                    confidence: result.confidence || null,
+                    timestamp: new Date().toISOString(),
+                    input: { current, voltage, temp }
+                });
+            }
+
             res.json({
                 message: 'Data received, processed, and stored',
                 id: dbResult.insertId,
                 fault: fault,
-                confidence: result.confidence // Optional: include confidence
+                confidence: result.confidence
             });
         });
     } catch (error) {
